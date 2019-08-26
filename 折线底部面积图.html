@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>折线面积图</title>
+</head>
+<body>
+    <div id="main" style="width: 600px;height:400px;"></div>
+    <script src="./js/echarts.min4.js"></script>
+    <script>
+   
+
+var colors = [ '#F35B5C','#6CA5ED', '#675bba'];
+var option = {
+    color: colors,
+    tooltip: {
+        trigger: 'none',
+        axisPointer: {
+            // type: 'cross'
+        }
+    },
+    legend: {
+        data:['正态分布']
+    },
+    // grid: {
+    //     top: 70,
+    //     bottom: 50
+    // },
+    xAxis: [
+        {
+            type: 'category',  // 坐标轴在上方
+            boundaryGap: false,// 数据与y轴没有间距
+            axisTick: {
+                alignWithLabel: true
+            },
+            splitLine: {show:false},// 去掉x轴上垂直的网格线
+            axisLine: {
+                onZero: false,
+                lineStyle: {
+                    color: "#ccc" // x轴颜色
+                }
+            },
+            axisLabel:{
+                    color:'#666',
+                        // rotate:45 // x轴文字旋转的角度
+                    },
+            axisPointer: {
+                label: {
+                    /*formatter: function (params) {
+                        return '降水量  ' + params.value
+                            + (params.seriesData.length ? '：' + params.seriesData[0].data : '');
+                    }*/
+                }
+            },
+            data: ['1月', '2月', '3月', '4月', '5月']
+        },
+
+    ],
+    yAxis: [
+        {
+            type: 'value',
+            // show:false, // 这个设置会直接将y轴及y轴分割线全部隐藏
+            axisTick: {onGap:false,show:false},
+            splitNumber: 3,
+            splitArea : {show : false},
+            axisLine: {
+                show:false,
+                lineStyle: {
+                    color: "#fff"
+                },
+            
+            },
+            splitLine: {// 显示y轴上垂直的网格线
+                show:true,
+                lineStyle: {
+                    color: "#eee"
+                }
+            },
+        }
+    ],
+    // visualMap: {
+    //      //type: 'continuous', // 定义为连续型 viusalMap
+    //     //  show: false,
+    //     dimension: 0,  //指明维度 二维数组中的第几列  [[x1,y1],[x2,y2],...]  0代表x1 x2   1代表y1,y2
+    //     pieces: [{
+    //         lt: 2,// y轴数据数组对应的下标,x轴是category类型，y轴是value类型
+    //         color: '#6CA5ED'
+    //     }, {
+    //         gte: 2,
+    //         lte: 4,
+    //         color: '#F35B5C'
+    //     }]
+    // },
+    series: [
+        {
+            // name:'正太分布',
+            type:'line',
+            // smooth: true,
+            // xAxisIndex: 1,
+            // data: data2,   
+            data: [0.1148,0.1398,0.1308,0.1533,0.1602],   
+            symbol: '',// x轴与y轴交叉的数据点对应的标志
+            symbolSize: 2,
+            label: {
+                
+                    show: true,
+                    position: 'top',
+                    formatter: function (v) {
+                        return parseFloat(v.data*100).toFixed(2) + '%'
+                    },
+                
+            },
+            areaStyle: {// 曲线下方的渐变色
+                normal: {
+                    color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
+                        offset: 0,
+                        color: '#FFFAFB'
+                    }, {
+                        offset: 1,
+                        color: '#FFFAFB'
+                    }])
+                }
+            },
+            // markPoint: {
+            //     data: [
+            //         {
+            //          name:'您的位置',
+            //          coord:[d,15],
+            //          value: '您的位置',
+            //          symbol:"rect",
+            //          symbolSize:[60,20],
+            //          symbolOffset:[30,-20],
+            //          itemStyle:{
+            //              color:"rgb(0,0,0,0)"// 标注点矩形的背景色
+            //          },
+            //          label:{
+            //              color:'#F35B5C' // 标注文字颜色
+            //          }
+                
+            //         }
+
+            //     ]
+            // },
+            // markArea: {
+            //     data: [ [{
+            //         name: '早高峰',
+            //         xAxis: '-0.3'
+            //     }, {
+            //         xAxis: '0'
+            //     }], [{
+            //         name: '晚高峰',
+            //         xAxis: '0.5'
+            //     }, {
+            //         xAxis: '0.9'
+            //     }] ]
+            // }
+        }
+    ]
+};
+  // 基于准备好的dom，初始化echarts实例
+        var myChart = echarts.init(document.getElementById('main'));
+         myChart.setOption(option);
+
+    </script>
+</body>
+</html>
