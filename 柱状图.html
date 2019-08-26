@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>柱状图</title>
+    <style>
+      * {
+          padding: 0;
+          margin: 0;
+      }
+   </style>
+</head>
+<body>
+    <div id="main" style="width: 600px;height:400px;"></div>
+    <script src="./js/echarts.min4.js"></script>
+    <script>
+        option = {
+            title: {
+                text: '世界人口总量',
+                subtext: '数据来自网络',
+                show:false
+            },
+            tooltip : {
+                trigger: 'axis',
+                show:false,
+                axisPointer : {            // 坐标轴指示器，坐标轴触发有效
+                        type : 'shadow'        // 默认为直线，可选为：'line' | 'shadow'
+                },
+                // 字符串模板
+                // formatter:"{b} <br/>{a0} : {c0}<br/>{a1} : {c1}"
+                // 自定义函数
+                // formatter:function(params){
+                //     var res='<div><p>'+params[0].name+'</p></div>' 
+                //     for(var i=0;i<params.length;i++){
+                //         res+='<p>'+params[i].seriesName+':'+(params[i].data*100).toFixed(2)+'%'+'</p>'
+                //     }
+                //     return res;
+                // }
+            },
+            legend: {
+                show:false,
+                data: []
+            },
+            grid: {
+                left: '3%',
+                right: '4%',
+                bottom: '3%',
+                containLabel: true
+            },
+            yAxis: {
+                type: 'value',
+                boundaryGap: [0, 0.01],
+                axisLabel : {
+                    // formatter: '{value}',
+                    formatter: function (v) {
+                        return parseFloat(v*100).toFixed() + '%'
+                    },
+                    color:'#666',// 轴线上文字的颜色
+                    // rotate:45 // x轴文字旋转的角度
+                    verticalAlign:"bottom"
+                },
+                axisTick: {onGap:false,show:false},// 轴线上的分隔突出线隐藏
+                splitNumber: 3,
+                splitArea : {show : false},
+                axisLine: { // 设置y轴线样式
+                    lineStyle: {
+                        color: "#fff"
+                    },
+                
+                },
+                splitLine: {// 显示y轴上的网格线
+                    show:true,
+                    lineStyle: {
+                        color: "#E9E9E9" // y轴上与x轴平行的分割线的颜色
+                    }
+                },
+            },
+            xAxis: {
+                type: 'category',
+                data: ['银行','机械','白酒','医药','房地产'],
+                axisLabel:{// 实现文字纵向显示
+                    formatter:function(value){
+                        return value.split("").join("\n");
+                    },
+                    color:"#333"
+                },
+                axisTick: {onGap:false,show:false},// 轴线上的分隔突出线隐藏
+                axisLine: {
+                    lineStyle: {
+                        color: "#eee"
+                    }
+                },
+            },
+            series: [
+            
+                {
+                    // name: '2012年',
+                    type: 'bar',
+                    barWidth : 30,//柱图宽度
+                    // barGap: '100%',// 同一x轴坐标刻度内两个柱子之间的距离 
+                    barCategoryGap: '50%',// 不同坐标刻度内柱子之间的距离
+                    data: [0.56,0.05,0.32,0.12,0.45],
+                    itemStyle: {
+                        normal: {
+                            // 单独为每根柱子颜色设置
+                            color: function(params) {
+                                let colorList = [
+                                    "#FF7674",
+                                    "#FF7674",
+                                    "#FFBC57",
+                                    "#7699F3",
+                                    "#9AC99A"
+                                ];
+                                return colorList[params.dataIndex];
+                            }
+                        }
+                    },
+                    // 柱子顶部标注
+                    label : {
+                        show : true,
+                        position:'top',
+                        textStyle:{
+                            color:'#000',
+                            fontSize:'10'
+                        },
+                        formatter:function(params){
+                            return (params.value*100).toFixed(0)+"%";
+                        }
+                    },
+                }
+            ]
+        };
+
+        // 基于准备好的dom，初始化echarts实例
+        var myChart = echarts.init(document.getElementById('main'));
+         myChart.setOption(option);
+    </script>
+</body>
+</html>
