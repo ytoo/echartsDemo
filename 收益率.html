@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>收益率</title>
+</head>
+<body>
+    <div id="main" style="width: 600px;height:400px;"></div>
+    <script src="./js/echarts.min4.js"></script>
+    <script>
+    var  option = {
+            title : {
+                text: '',
+                subtext: ''
+            },
+            tooltip : {
+                trigger: 'axis',
+                axisPointer : {            // 坐标轴指示器，坐标轴触发有效
+                        type : 'shadow'        // 默认为直线，可选为：'line' | 'shadow'
+                    }
+            },
+            legend: {
+                data:['我的收益','上证指数'],
+                x:"right",
+                y:"top",
+                // 图标标题不可点击
+                selectedMode:false
+            },
+            grid: {
+                // x:0, // 绘图网格距离左上角和右下角的位置
+                // y:0,
+                x2: 0,
+                // y2:0
+            },
+            toolbox: {
+                show : false,
+                feature : {
+                    mark : {show: false},
+                    dataView : {show: false, readOnly: false},
+                    magicType : {show: false, type: ['line', 'bar']},
+                    restore : {show: false},
+                    saveAsImage : {show: false}
+                }
+            },
+            calculable : false,
+            xAxis : [
+                {
+                    type : 'category', // 表示x轴是分类,category和value值的设置实现x轴y轴的翻转
+                    //  type : 'value',
+                    position:"left",
+                    data : [20180701,20180702,20180703,20180704,20180705,20180706,20180707,20180708,20180709,20180710,20180711,20180712],
+                    axisLabel:{// 实现文字纵向显示
+                    formatter:function(value){
+                        return value.split("").join("\n");
+                    }
+                }
+                }
+            ],
+            yAxis : [
+                {
+                    type : 'value', // 表示y轴是值
+                    // type : 'category',
+                    position:"top",
+                    show:false
+                }
+            ],
+            series : [
+                {
+                    name:'我的收益',
+                    type:'bar',
+                    barGap: '0',// 同一坐标刻度内两个柱子之间的距离
+                    barCategoryGap: '30%',// 两个临近系列之间的距离
+                    data:[2.0, 4.9, 7.0, 23.2, 25.6, 76.7, 135.6, 162.2, 32.6, 20.0, 6.4, 3.3],
+                    // label:{
+                    //    show : true,
+                    //    position:'insideTop',
+                    //    rotate:-90,
+                    //    verticalAlign:'top',
+                    // },
+                    itemStyle: {
+                        normal: {
+                            borderWidth: "",
+                            borderColor:'' ,
+                            color: 'red',
+                            // 标注
+                            label : {
+                                show : true,
+                                position:'top',
+                                rotate:'',
+                                textStyle:{
+                                    color:'#000',
+                                    // align:'left',
+                                    // baseline:'left',
+                                    fontSize:12
+                                }
+                            },
+                            
+                            
+                        },
+                        // hover时的增强效果
+                        // emphasis: {
+                        //     label:{
+                        //         show:true,
+                        //     },
+                        //     borderWidth: "",
+                        //     borderColor:'' ,
+                        //     color: ''
+                        // }
+                    },
+                    markPoint : {
+                        data : [
+                        
+                        ]
+                    },
+                
+                },
+                {
+                    name:'上证指数',
+                    type:'bar',
+                    data:[2.6, -9, 9.0, 26.4, 28.7, 70.7, 175.6, 182.2, 48.7, 18.8, 6.0, 2.3],
+                     itemStyle: {
+                        normal: {
+                            borderWidth: "",
+                            borderColor:'' ,
+                            color: 'blue'
+                        },
+                        // emphasis: {
+                        //     label:{
+                        //         show:true,
+                        //     },
+                        //     borderWidth: "",
+                        //     borderColor:'' ,
+                        //     color: ''
+                        // }
+                    },
+                    markPoint : {
+                        data : [
+                        
+                        ]
+                    },
+                    
+                }
+            ]
+        };
+
+        // 基于准备好的dom，初始化echarts实例
+        var myChart = echarts.init(document.getElementById('main'));
+         myChart.setOption(option);
+    </script>
+    
+</body>
+</html>
