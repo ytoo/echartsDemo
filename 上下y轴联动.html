@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>上下多y轴</title>
+    <style>
+        #main1 {
+            position: relative;
+        }
+       #main1::after {
+           content: "仓位";
+           position: absolute;
+           top: 35px;
+           left: 0;
+           color: #666;
+           font-size: 16px;
+       }
+    </style>
+</head>
+<body>
+    <div>
+       <div id="main" style="width: 600px;height:200px;"></div>
+       <div id="main1" style="width: 600px;height:100px;"></div>
+    </div>
+    
+    <script src="./js/echarts.min4.js"></script>
+    <script>
+        var colors = ['#E2233E', '#007AFF', '#FF8000'];
+        var option = {
+                color:colors,
+                tooltip : {
+                    trigger: 'axis',
+                    // axisPointer : {            // 坐标轴指示器，坐标轴触发有效
+                    //     type : 'line'        // 默认为直线，可选为：'line' | 'shadow'
+                    // }
+                    showDelay: 0             // 显示延迟，添加显示延迟可以避免频繁切换，单位ms
+                },
+                legend: {
+                    data:['降雨','流量','水位']
+                },
+                // toolbox: {//右上角的工具栏，后面关联的两个会隐藏
+                //     show : true,
+                //     feature : {
+                //         mark : {show: true},
+                //         dataZoom : {show: true},
+                //         magicType : {show: true, type: ['line', 'bar']},
+                //         restore : {show: true},
+                //         saveAsImage : {show: false}
+                //     }
+                // },
+                // dataZoom : {//滑动条，联动关联
+                //     backgroundColor: 'rgba(0,0,0,0)',
+                //     dataBackgroundColor: 'rgba(0,0,0,0)',
+                //     handleColor: 'rgba(70,130,180,0.8)',
+                //     fillerColor: 'rgba(144,197,237,0.6)',
+                //     handleSize: 7,
+                //     show : false,//不显示，已经做关联，由最后一个图显示
+                //     realtime: true,
+                //     start : 0,
+                //     end : 100
+                // },
+                //多个图，就有多个grid,排序默认0、1、2....
+                // 多个图就有多个网格,每个网格对应x轴和y轴
+                grid: 
+                       
+                    {x: '8%',y:50, y2: 0,height: '72%'}
+                   
+                    // {x: '8%', y2: '7%', height: '25%'}
+                ,
+                //多个图，就要定义多个x轴，虽然这个表的x轴是一样的
+                xAxis: [
+                    {   
+                        show:false,
+                        type : 'category',
+                        boundaryGap : false,
+                        axisTick: {onGap:false},
+                        splitLine: {show:false},
+                        axisLabel:{show:false,rotate: 45},//不显示
+                        // axisLine: {
+                        //     lineStyle: {
+                        //         color: "#eee"
+                        //     }
+                        // },
+                        // axisLabel:{
+                        //     color:'#666',
+                        //     // rotate:45 // x轴文字旋转的角度
+                        // },
+                        
+                        data : [ '2016-01', '2016-02', '2016-03', '2016-04', '2016-05',
+						'2016-06', '2016-07', '2016-08', '2016-09', '2016-10',
+						'2016-11', '2016-12' ]
+                    },
+                    
+                ],
+                //y轴，不管有几个x轴，几个y轴，或者图，只要找到他对应的grid图的序号索引就可以精准匹配
+                yAxis: [
+                       
+                        {
+                            type: 'value',
+                            
+                            // position: 'left',// y轴在左边
+                             axisLabel : {
+                                formatter: '{value}'
+                            },
+                            splitNumber: 5,
+                            splitArea : {show : true}
+                        },
+                        
+                    
+                ],
+                //数据就要选择是哪个x,y轴与之对应
+                // 实现多图联动的关键，第一个图中的series系列要把数据写全，下一个图中的数据写为空
+                series: [
+                            {
+                                name:"降雨",
+                                type:'line',
+                                smooth: true,// 曲线是否平滑过渡
+                                
+                                data:[ 10, 50, 100, 32, 56, 87, 41, 25, 46, 96, 30,150 ],
+                               
+                            }, 
+                            {
+                                name:"流量",
+                                type:'line',
+                                smooth: true,
+                               
+                                data:[ 12, 15, 26, 36, 25, 18, 16, 47, 58, 69, 93, 150 ],
+                               
+                            },
+                            {
+                                name:"水位",
+                                type:'line',
+                                smooth: false,
+                                symbol: 'none',
+                                data:[],
+                               
+                            },
+                            
+                    ]
+        };
+        var myChart = echarts.init(document.getElementById('main'));
+        myChart.setOption(option);
+
+        var option1 = {
+                color: colors,
+                backgroundColor: {
+                    type: 'linear',
+                    x: 0,
+                    y: 0,
+                    x2: 0,
+                    y2: 1,
+                    colorStops: [{
+                        offset: 0, color: 'rgba(255,246,237,1)' // 0% 处的颜色
+                    }, {
+                        offset: 1, color: 'rgba(255,247,238,0.25)' // 100% 处的颜色
+                    }],
+                    globalCoord: false // 缺省为 false
+                },
+                tooltip : {
+                    trigger: 'axis',
+                    // axisPointer : {            // 坐标轴指示器，坐标轴触发有效
+                    //     type : 'line'        // 默认为直线，可选为：'line' | 'shadow'
+                    // }
+                    showDelay: 0             // 显示延迟，添加显示延迟可以避免频繁切换，单位ms
+                },
+                legend: {
+                    y:-100,
+                    show:true,
+                    data:['降雨','流量','水位']
+                },
+                // toolbox: {
+                //     y : -30,//隐藏
+                //     show : true,
+                //     feature : {
+                //         mark : {show: true},
+                //         dataZoom : {show: true},
+                //         dataView : {show: true, readOnly: false},
+                //         magicType : {show: true, type: ['line', 'bar']},
+                //         restore : {show: true},
+                //         saveAsImage : {show: false}
+                //     }
+                // },
+                // dataZoom : {
+                //     backgroundColor: 'rgba(0,0,0,0)',
+                //     dataBackgroundColor: 'rgba(0,0,0,0)',
+                //     handleColor: 'rgba(70,130,180,0.8)',
+                //     fillerColor: 'rgba(144,197,237,0.6)',
+                //     handleSize: 7,
+                //     show : false,
+                //     realtime: true,
+                //     start : 0,
+                //     end : 100
+                // },
+                //多个图，就有多个grid,排序默认0、1、2....
+                // 多个图就有多个网格,每个网格对应x轴和y轴
+                grid: 
+                        //0降雨
+                    // {x: '8%', y: '7%',height: '50%'},
+                    //1水位和流量
+                    {x: '8%', y2: 20, height: '80%'}
+                ,
+                //多个图，就要定义多个x轴，虽然这个表的x轴是一样的
+                xAxis: [
+                    {  
+                        type : 'category',
+                        boundaryGap : false,// 绘图点与y轴之间是否有间隙
+                        axisTick: {
+                              show:false,
+                                alignWithLabel: false
+                            },
+                        axisLine: {
+                            lineStyle: {
+                                color: "#eee"
+                            }
+                        },
+                        axisLabel:{
+                            color:'#666',
+                            // rotate:45 // x轴文字旋转的角度
+                        },
+                        // axisLabel:{show:false,rotate: 45},
+                        // axisTick: {onGap:false},
+                        // splitLine: {show:false},
+                        data : [ '2016-01', '2016-02', '2016-03', '2016-04', '2016-05',
+						'2016-06', '2016-07', '2016-08', '2016-09', '2016-10',
+						'2016-11', '2016-12' ]
+                    },
+                    
+                ],
+                //y轴，不管有几个x轴，几个y轴，或者图，只要找到他对应的grid图的序号索引就可以精准匹配
+                yAxis: [
+                       
+                       
+                        {
+                            show:false,
+                            type: 'value',
+                            // gridIndex: 1,
+                            // name: '水位',
+                            // position: 'left',
+                            splitNumber: 1,
+                             boundaryGap: false,
+                             splitArea : {show : true},
+                            // nameLocation: 'middle',//y轴name的位置
+                            
+                            axisLabel: {
+                                formatter: '{value}',
+                                // formatter: function (v) {
+                                //     return parseFloat(v/10000) + ' 万'
+                                // },
+                                textStyle:{
+                                    fontSize:12//y轴坐标轴上的字体大小
+                                    }
+                                
+                            },
+                        }
+                    
+                ],
+                //数据就要选择是哪个x,y轴与之对应
+                // 多图联动的关键，在后面这个图中，只写本图中需要的数据，上一个图中的数据不需要写，否则实现不了联动
+                series: [
+                            // {
+                            //     name:"降雨",
+                            //     type:'line',
+                            //     smooth: true,// 曲线是否平滑过渡
+                                
+                            //     stack: '降雨',
+                            //     data:[],
+                            //     min:0
+                            // }, 
+                            // {
+                            //     name:"流量",
+                            //     type:'line',
+                            //     smooth: true,
+                                
+                            //     stack: '流量',
+                            //     data:[],
+                            //     min:0
+                            // },
+                            {
+                                name:"水位",
+                                type:'line',
+                                
+                                data:[ 10000, 2000, 1065, 3620, 6530, 9510, 2000, 3002, 3580,5063, 1520, 9000 ],
+                                // min:0,
+                                // areaStyle:{
+                                   
+                                // }
+                            }
+                    ]
+        };
+
+        // 基于准备好的dom，初始化echarts实例
+       
+         var myChart1 = echarts.init(document.getElementById('main1'));
+          
+         myChart1.setOption(option1);
+        //  myChart.group = "group1";
+        //  myChart1.group = "group1";
+        //  echarts.connect("group1")
+        echarts.connect([myChart,myChart1]);
+    </script>
+    
+</body>
+</html>
