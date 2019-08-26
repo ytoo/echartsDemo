@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>双饼图嵌套</title>
+    <style>
+      * {
+          padding: 0;
+          margin: 0;
+      }
+   </style>
+</head>
+<body>
+    <div id="main" style="width: 600px;height:400px;"></div>
+    <script src="./js/echarts.min4.js"></script>
+    <script src="./jquery.min.js"></script>
+    <script>
+     option = {
+           
+            color: ['#789B99','#FF544A','#FFC64B','#69D1C9',"#7E7CFF"],
+            tooltip: {
+                trigger: 'item',
+                formatter: "{a} <br/>{b}: {c} ({d}%)"
+            },
+            series: [
+                {
+                    
+                    type:'pie',
+                     name:'访问来源',
+                    radius: [0, '63%'],
+                    selectedOffset: 0,
+                    hoverAnimation: false,
+                    // avoidLabelOverlap: false,
+                    label: {
+                        
+                        normal: {
+                        show: true,
+                        position: "inside",
+                        formatter: function (param) {
+                                 console.log(param);
+                                        return "{total|" + param.data.value + "}\n{percentage|" + param.data.data + "%}\n{name|" + param.data.name + "}";
+                                    },
+                        verticalAlign: "top",
+                        height: 250,// 富文本
+                        textBorderColor: "none",
+                        textShadowColor: "none",
+                        // 富文本  设置中间圆内文本的格式
+                        rich: {
+                            total: {
+                                color: '#fff',
+                                height: 28,
+                                lineHeight: 28,
+                                fontSize: 22,
+                                verticalAlign: "top",
+                            },
+                            percentage: {
+                                color: '#fff',
+                                height: 56,
+                                lineHeight: 45,
+                                fontSize: 32,
+                                fontWeight: "bold",
+                                verticalAlign: "top",
+                            },
+                            name: {
+                                color: ' rgba(255,255,255,.6)',
+                                height: 21,
+                                lineHeight: 30,
+                                fontSize: 12,
+                                verticalAlign: "bottom",
+                            },
+                        },
+                            
+                    },
+                    emphasis: {
+                        show: true,
+                        textStyle: {
+                            fontSize: '30',
+                            fontWeight: 'bold'
+                        }
+                    }
+                    },
+                    
+                    data:[
+                        {value:335, name:'直接访问',data:13.08},
+                    
+                    ],
+                    itemStyle:{
+                        color:"#789BF0"
+                    }
+                },
+                {
+                    type: 'pie',
+                    name:'访问来源',
+                    startAngle:0,
+                    radius: ['68%', '90%'],
+                    startAngle: 0,
+                    // selectedMode: "single", // 设置后，点击后扇形无法复位
+                    label: { show: false, },
+                    data: [
+                        {value:335, name:'直接访问',data:13.08},
+                        {value:310, name:'邮件营销',data:12.10},
+                        {value:234, name:'联盟广告',data:9.13},
+                        {value:135, name:'视频广告',data:5.27},
+                        {value:1548, name:'搜索引擎',data:60.42}
+                    ]
+                }
+            ]
+        };
+
+        // 基于准备好的dom，初始化echarts实例
+        var myChart = echarts.init(document.getElementById('main'));
+         myChart.setOption(option);
+
+        //  点击外圈圆对应的模块，内圈圆随着改变
+         myChart.on("click",function(param){
+            if (param.seriesIndex == 1) {
+                var newOption = myChart.getOption();
+                newOption.series[0].data[0] = param.data;
+                myChart.setOption(newOption);
+            }
+         })
+    </script>
+</body>
+</html>
