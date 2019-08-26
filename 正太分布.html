@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>正太分布</title>
+</head>
+<body>
+    <div id="main" style="width: 600px;height:400px;"></div>
+    <script src="./js/echarts.min4.js"></script>
+    <script>
+
+var result = {
+    leftx:[-0.9,5],
+    maxPos:[-0.3,90],
+    zero:[0,60],
+    my:[0.5,15],
+    rightx:[0.9,5]
+};
+var data2=[];
+data2[0] = result.leftx;
+function paixu (arr1,arr2,arr3) {
+   var arr = [];
+   if(arr1[0] <= 0 && arr3[0] <= 0){
+       if(arr1[0] <= arr3[0]){
+           arr = [arr1,arr3,arr2];
+       } else {
+           arr = [arr3,arr1,arr2];
+       }
+    }
+    if(arr1[0] >= 0 && arr3[0] >= 0) {
+       if(arr1[0] <= arr3[0]){
+           arr = [arr2,arr1,arr3];
+       } else {
+           arr = [arr2,arr3,arr1];
+       }
+    }
+    if(arr1[0] < 0 && arr3[0] > 0) {
+        arr = [arr1,arr2,arr3]
+    } 
+    if(arr1[0] > 0 && arr3[0] < 0) {
+        arr = [arr3,arr2,arr1]
+    }
+
+    return arr;
+}
+data2 = data2.concat(paixu(result.maxPos,result.zero,result.my));
+data2[4] = result.rightx;
+console.log(data2);
+var a = +"-0.0668";// 最左边点
+var b = +"0.0889";// 最右边点
+var c = +"0"; // 最高点
+var d = +"-0.0148"; // 用户坐标点
+var x1 = (c-a)/3+a;// 最左边点和最高点之间
+var x2 = b-(b-c)/3;// 最右边点和最高点之间
+data2 = [[a,5],[x1,18],[c,60],[x2,15],[b,5]];
+// data2 = [[-1.9,5],[-1,20],[-0.3,60],[0.3,15],[0.9,5]];
+// var data2 = [[-0.7,5],[-0.4,90],[0,60],[0.4,40],[0.8,5]];
+//使用双坐标轴 绘制两遍：上面一个坐标轴使用category类型 下面使用type：value类型 （负的使用绿色 正的使用红色和上面使用category的红色重合）
+var colors = ['#6CA5ED', '#F35B5C', '#675bba'];
+var option = {
+    color: colors,
+    tooltip: {
+        trigger: 'none',
+        axisPointer: {
+            // type: 'cross'
+        }
+    },
+    legend: {
+        data:['正态分布']
+    },
+    // grid: {
+    //     top: 70,
+    //     bottom: 50
+    // },
+    xAxis: [
+        {
+            type: 'value',  // 坐标轴在上方
+            axisTick: {
+                alignWithLabel: true
+            },
+            splitLine: {show:false},// 去掉x轴上垂直的网格线
+            axisLine: {
+                onZero: false,
+                lineStyle: {
+                    color: "#ccc" // x轴颜色
+                }
+            },
+            axisLabel:{
+                    color:'#666',
+                        // rotate:45 // x轴文字旋转的角度
+                    },
+            axisPointer: {
+                label: {
+                    /*formatter: function (params) {
+                        return '降水量  ' + params.value
+                            + (params.seriesData.length ? '：' + params.seriesData[0].data : '');
+                    }*/
+                }
+            },
+            // data: ['-0.9', '-0.3', '0', '0.5', '0.9']
+        },
+
+    ],
+    yAxis: [
+        {
+            type: 'value',
+            // show:false, // 这个设置会直接将y轴及y轴分割线全部隐藏
+            axisTick: {onGap:false,show:false},
+            splitNumber: 3,
+            splitArea : {show : false},
+            axisLine: {
+                show:false,
+                lineStyle: {
+                    color: "#fff"
+                },
+            
+            },
+            splitLine: {// 显示y轴上垂直的网格线
+                show:true,
+                lineStyle: {
+                    color: "#eee"
+                }
+            },
+        }
+    ],
+    visualMap: {
+         //type: 'continuous', // 定义为连续型 viusalMap
+         show: false,
+        dimension: 0,  //指明维度 二维数组中的第几列  [[x1,y1],[x2,y2],...]  0代表x1 x2   1代表y1,y2
+        pieces: [{
+            lt: 0,
+            color: '#6CA5ED'
+        }, {
+            gte: 0,
+            lte: b,
+            color: '#F35B5C'
+        }]
+    },
+    series: [
+        {
+            name:'正太分布',
+            type:'line',
+            smooth: true,
+            // xAxisIndex: 1,
+            data: data2,   
+            symbol: 'circle',// 数据点对应的标志
+            symbolSize: 8,
+            areaStyle: {
+                normal: {
+                    color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
+                        offset: 0,
+                        color: '#FFFAFB'
+                    }, {
+                        offset: 1,
+                        color: '#FFFAFB'
+                    }])
+                }
+            },
+            markPoint: {
+                data: [
+                    {
+                    //  name:'您的位置',
+                     coord:[d,15],
+                     value: '您的位置',
+                     symbol:"rect",
+                     symbolSize:[60,20],
+                     symbolOffset:[30,-20],
+                     itemStyle:{
+                        //  color:"rgb(0,0,0,0)",// 标注点矩形的背景色
+                         color:"#FFFAFB"// 标注点矩形的背景色
+                     },
+                     label:{
+                         color:'#F35B5C' // 标注文字颜色
+                     }
+                
+                    }
+
+                ]
+            },
+            // markLine: {
+            //     data: [
+            //         {type: 'average', name: '平均值'},
+            //         [{
+            //             symbol: 'none',
+            //             x: "90%",
+            //             yAxis: 60
+            //         }, {
+            //             symbol: 'circle',
+            //             label: {
+            //                 normal: {
+            //                     position: 'start',
+            //                     formatter: '最大值'
+            //                 }
+            //             },
+            //             type: 'max',
+            //             name: '最高点'
+            //         }]
+            //     ]
+            // },
+            // markLine:{
+            //     data:[
+            //         {type: 'max', name: '最大值'},
+            //         [
+            //             {name: '标线1起点', value: 20, x: 0.0148, y: 0},
+            //             {name: '标线1终点', x: 0.0148, y: 60}
+            //         ]
+            //     ]
+            // }
+        },
+        {
+            name:'用户位置',
+            type:'line',
+            data:[0],
+            markLine: {
+                data: [[
+                    {coord:[d,0]},
+                    {coord:[d,60]}//如何获取grid上侧最大值，目前是写死的
+                ]]
+            }
+        }
+    ]
+};
+  // 基于准备好的dom，初始化echarts实例
+        var myChart = echarts.init(document.getElementById('main'));
+         myChart.setOption(option);
+
+    </script>
+</body>
+</html>
